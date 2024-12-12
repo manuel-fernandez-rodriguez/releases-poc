@@ -46,10 +46,10 @@ jobs:
         tag: ${{ steps.get-version.outputs.version }}  
       run: echo "RELEASE_NAME=$(gh release list --json name,tagName,isDraft --jq '.[] | select(.tagName=="1.0.0-alpha" and .isDraft)|.name')" >> $GITHUB_OUTPUT
     - name: Create release
-      if: steps.version.outputs.RELEASE_NAME == ""
+      if: steps.version.outputs.RELEASE_NAME == ''
       run: echo "Create"
     - name: Update release
-      if: steps.version.outputs.RELEASE_NAME != ""
+      if: steps.version.outputs.RELEASE_NAME != ''
       run: echo "Update"
     # - name: Create release
     #   env:  
