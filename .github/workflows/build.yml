@@ -16,7 +16,7 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-
+    concurrency: Registerly
     steps:
     - uses: actions/checkout@v4
     - name: Setup .NET
@@ -38,6 +38,6 @@ jobs:
       env:  
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
         tag: ${{ steps.get-version.outputs.version }}  
-      #run: gh release create "$tag" ./Registerly/src/bin/Release/*.nupkg --generate-notes --draft --prerelease --title "Registerly v$tag"
-      run: ls -l ./Registerly/src/bin/Release/
+      run: gh release create "$tag" ./Registerly/src/bin/Release/*.nupkg --generate-notes --draft --prerelease --title "Registerly v$tag"
+
       
