@@ -44,7 +44,7 @@ jobs:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         tag: ${{ steps.get-version.outputs.version }}  
       run: |
-        $(gh release list --json name,tagName,isDraft --jq '.[] | select(.tagName=="1.0.0-alpha" and .isDraft)|.name') >> $RELEASE_NAME
+        RELEASE_NAME="$(gh release list --json name,tagName,isDraft --jq '.[] | select(.tagName=="1.0.0-alpha" and .isDraft)|.name')"
         if [ "$RELEASE_NAME" == "" ]
         then
           echo "Creating new release"
