@@ -12,6 +12,9 @@ on:
     paths: [ "Registerly/**" ]
   workflow_dispatch:
 
+env:
+  PROJECT: Registerly
+
 jobs:
   build:
 
@@ -30,21 +33,21 @@ jobs:
         dotnet-version: 8.0.x
     - name: Build
       run: |
-         chmod +x ./Registerly/build.sh
-         cd ./Registerly/
+         chmod +x ./$PROJECT/build.sh
+         cd ./$PROJECT/
          ./build.sh
       shell: bash
     - name: Get version
       id: get-version
       uses: kzrnm/get-net-sdk-project-versions-action@v2
       with:
-        proj-path: ./Registerly/src/DeviantCoding.Registerly.csproj
+        proj-path: ./$PROJECT/src/DeviantCoding.$PROJECT.csproj
     - name: Create or update release
       env:  
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        tag: ${{ steps.get-version.outputs.version }}  
+        tag: ${{ PROJECT }} ${{ steps.get-version.outputs.version }}
       run: |
-        RELEASE_NAME="$(gh release list --json name,tagName,isDraft --jq '.[] | select(.tagName=="1.0.0-alpha" and .isDraft)|.name')"
+        RELEASE_NAME="$(gh release list --json name,tagName,isDraft --jq '.[] | select(.tagName=="$tag" and .isDraft)|.name')"
         if [ "$RELEASE_NAME" == "" ]
         then
           echo "Creating new release"
