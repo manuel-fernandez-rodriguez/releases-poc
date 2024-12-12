@@ -34,10 +34,10 @@ jobs:
       id: get-version
       uses: kzrnm/get-net-sdk-project-versions-action@v2
       with:
-        proj-path: ./Registerly/Registerly.csproj
+        proj-path: ./Registerly/src/DeviantCoding.Registerly.csproj
     - name: Create release
       env:  
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
         tag: ${{ steps.get-version.outputs.version }}  
-      run: gh release create "$tag" ${{ github.workspace }}/Registerly/bin/Release/*.nupkg --generate-notes --draft --prerelease --title "Registerly v$tag"
+      run: gh release create "$tag" ${{ github.workspace }}/Registerly/src/bin/Release/*.nupkg --generate-notes --draft --prerelease --title "Registerly v$tag"
       
