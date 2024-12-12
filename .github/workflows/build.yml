@@ -47,14 +47,15 @@ jobs:
       run: echo "RELEASE_NAME=$(gh release list --json name,tagName,isDraft --jq '.[] | select(.tagName=="1.0.0-alpha" and .isDraft)|.name')" >> $GITHUB_OUTPUT
     - name: Create release
       if: steps.release.outputs.RELEASE_NAME == ''
-      run: echo "Create"
+      env:  
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
+        tag: ${{ steps.get-version.outputs.version }}  
+      run: gh release create "$tag" ./Registerly/src/bin/Release/*.nupkg --generate-notes --draft --prerelease --title "Registerly v$tag"
     - name: Update release
       if: steps.release.outputs.RELEASE_NAME != ''
-      run: echo "Update"
-    # - name: Create release
-    #   env:  
-    #     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
-    #     tag: ${{ steps.get-version.outputs.version }}  
-    #   run: gh release create "$tag" ./Registerly/src/bin/Release/*.nupkg --generate-notes --draft --prerelease --title "Registerly v$tag"
+      env:  
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
+        tag: ${{ steps.get-version.outputs.version }}  
+      run: gh release upload "$tag" ./Registerly/src/bin/Release/*.nupkg --clobber
 
       
