@@ -29,7 +29,6 @@ jobs:
          cd ./Registerly/
          ./build.sh
       shell: bash
-    - uses: actions/checkout@v4
     - name: Get version
       id: get-version
       uses: kzrnm/get-net-sdk-project-versions-action@v2
@@ -40,5 +39,5 @@ jobs:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
         tag: ${{ steps.get-version.outputs.version }}  
       #run: gh release create "$tag" ./Registerly/src/bin/Release/*.nupkg --generate-notes --draft --prerelease --title "Registerly v$tag"
-      run: ls -l ./Registerly/src
+      run: ls -l ./Registerly/src/bin/Release/
       
