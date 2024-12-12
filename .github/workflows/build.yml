@@ -52,10 +52,10 @@ jobs:
         TEST_VAR="$(ls)"
         echo "TEST_VAR=$TEST_VAR"
 
-        ALL_RELEASES="$(gh release list --json name,tagName,isDraft --jq '.[] | select(.tagName=="$tag" and .isDraft)')"
+        ALL_RELEASES="$(gh release list --json name,tagName,isDraft --jq '.[] | select(.tagName=="${{ tag }}" and .isDraft)')"
         echo "ALL_RELEASES=$ALL_RELEASES"
 
-        RELEASE_NAME="$(gh release list --json name,tagName,isDraft --jq '.[] | select(.tagName=="$tag" and .isDraft)|.name')"
+        RELEASE_NAME="$(gh release list --json name,tagName,isDraft --jq '.[] | select(.tagName=="${{ tag }}" and .isDraft)|.name')"
         echo "RELEASE_NAME=$RELEASE_NAME"
         if [ -z "${RELEASE_NAME}" ]
         then
