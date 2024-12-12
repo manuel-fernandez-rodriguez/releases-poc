@@ -40,16 +40,16 @@ jobs:
       with:
         proj-path: ./Registerly/src/DeviantCoding.Registerly.csproj
     - name: Get Release Info
-      id: get-release-info
+      id: release
       env:  
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         tag: ${{ steps.get-version.outputs.version }}  
       run: echo "RELEASE_NAME=$(gh release list --json name,tagName,isDraft --jq '.[] | select(.tagName=="1.0.0-alpha" and .isDraft)|.name')" >> $GITHUB_OUTPUT
     - name: Create release
-      if: steps.version.outputs.RELEASE_NAME == ''
+      if: steps.release.outputs.RELEASE_NAME == ''
       run: echo "Create"
     - name: Update release
-      if: steps.version.outputs.RELEASE_NAME != ''
+      if: steps.release.outputs.RELEASE_NAME != ''
       run: echo "Update"
     # - name: Create release
     #   env:  
