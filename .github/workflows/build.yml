@@ -48,10 +48,10 @@ jobs:
         if [ "$RELEASE_NAME" == "" ]
         then
           echo "Creating new release"
-          #gh release create "$tag" ./Registerly/src/bin/Release/*.nupkg --generate-notes --draft --prerelease --title "Registerly v$tag"
+          gh release create "$tag" ./Registerly/src/bin/Release/*.nupkg --generate-notes --draft --prerelease --title "Registerly v$tag"
         else
           echo "Updating existing release"
-          #gh release upload "$tag" ./Registerly/src/bin/Release/*.nupkg --clobber
+          gh release upload "$tag" ./Registerly/src/bin/Release/*.nupkg --clobber
         fi
       shell: bash
 
