@@ -49,12 +49,12 @@ jobs:
         title: ${{ env.PROJECT }} v${{ steps.get-version.outputs.version }}
       run: |
         RELEASE_NAME="$(gh release list --json name,tagName,isDraft --jq '.[] | select(.tagName=="$tag" and .isDraft)|.name')"
-        if [ "$RELEASE_NAME" == "" ]
+        if [ -z "${RELEASE_NAME}" ]
         then
-          echo "Creating new release"
+          echo "Creating new release $tag"
           gh release create "$tag" ./${{ env.PROJECT }}/src/bin/Release/*.nupkg --draft --prerelease --title "$title"
         else
-          echo "Updating existing release"
+          echo "Updating existing release $tag"
           gh release upload "$tag" ./${{ env.PROJECT }}/src/bin/Release/*.nupkg --clobber
         fi
       shell: bash
