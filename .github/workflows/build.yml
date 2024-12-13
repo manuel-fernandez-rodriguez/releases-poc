@@ -28,18 +28,32 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
-    - name: Build
-      run: |
-         chmod +x ./${{ env.PROJECT }}/build.sh
-         cd ./${{ env.PROJECT }}/
-         ./build.sh
-      shell: bash
     - name: Get version
       if: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch'}}
       id: get-version
       uses: kzrnm/get-net-sdk-project-versions-action@v2
       with:
         proj-path: ./${{ env.PROJECT }}/src/DeviantCoding.${{ env.PROJECT }}.csproj
+    - name: Check version is valid
+      env:  
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        tag: ${{ env.PROJECT }}-${{ steps.get-version.outputs.version }}
+        title: ${{ env.PROJECT }} v${{ steps.get-version.outputs.version }}
+        prerelease: ${{ steps.get-version.outputs.version-suffix != '' && '--prerelease' || '' }}
+      run: |    
+        PUBLISHED_RELEASE_NAME="$(gh release list --json name,tagName,isDraft --jq '.[] | select(.tagName=="${{ env.tag }}" and .isDraft==false)|.name')"
+        if [ -n "${PUBLISHED_RELEASE_NAME}" ]
+        then
+            echo "Error! There is already a published release with version ${{ env.tag }}"
+            exit 1
+        fi
+      shell: bash    
+    - name: Build
+      run: |
+         chmod +x ./${{ env.PROJECT }}/build.sh
+         cd ./${{ env.PROJECT }}/
+         ./build.sh
+      shell: bash    
     - name: Create or update release
       if: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch'}}
       env:  
@@ -48,13 +62,14 @@ jobs:
         title: ${{ env.PROJECT }} v${{ steps.get-version.outputs.version }}
         prerelease: ${{ steps.get-version.outputs.version-suffix != '' && '--prerelease' || '' }}
       run: |
-        RELEASE_NAME="$(gh release list --json name,tagName,isDraft --jq '.[] | select(.tagName=="${{ env.tag }}" and .isDraft)|.name')"
-        if [ -z "${RELEASE_NAME}" ]
+        DRAFT_RELEASE_NAME="$(gh release list --json name,tagName,isDraft --jq '.[] | select(.tagName=="${{ env.tag }}" and .isDraft)|.name')"
+        if [ -z "${DRAFT_RELEASE_NAME}" ]
         then
           gh release create "$tag" ./${{ env.PROJECT }}/src/bin/Release/*.nupkg --draft ${prerelease:+"$prerelease"} --title "$title" --target ${{ github.sha }}
         else
           echo "Updating existing release $tag"
           gh release upload "$tag" ./${{ env.PROJECT }}/src/bin/Release/*.nupkg --clobber
+          gh release edit "$tag" --target ${{ github.sha }}
         fi
       shell: bash
 
