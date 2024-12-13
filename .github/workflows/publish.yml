@@ -16,7 +16,7 @@ jobs:
       env:  
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GH_REPO: ${{ github.repository_owner }}/${{ github.event.repository.name }}
-        tag: ${{ github.ref }}
+        tag: ${{ github.ref_name }}
       run: |
         gh release download "${{ env.tag }}"
         FILES="$(ls -l *.nupkg)"
