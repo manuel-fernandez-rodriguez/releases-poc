@@ -53,7 +53,7 @@ jobs:
         then
           echo "Creating new release $tag"
           echo "prerelease=$prerelease"
-          gh release create "$tag" ./${{ env.PROJECT }}/src/bin/Release/*.nupkg --draft --prerelease --title "$title"
+          gh release create "$tag" ./${{ env.PROJECT }}/src/bin/Release/*.nupkg --draft ${prerelease:+"$prerelease"} --title "$title"
         else
           echo "Updating existing release $tag"
           gh release upload "$tag" ./${{ env.PROJECT }}/src/bin/Release/*.nupkg --clobber
