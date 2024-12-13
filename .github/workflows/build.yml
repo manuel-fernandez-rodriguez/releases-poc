@@ -46,11 +46,13 @@ jobs:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         tag: ${{ env.PROJECT }}-${{ steps.get-version.outputs.version }}
         title: ${{ env.PROJECT }} v${{ steps.get-version.outputs.version }}
+        prerelease: ${{ steps.get-version.outputs.version-suffix != "" }}
       run: |
         RELEASE_NAME="$(gh release list --json name,tagName,isDraft --jq '.[] | select(.tagName=="${{ env.tag }}" and .isDraft)|.name')"
         if [ -z "${RELEASE_NAME}" ]
         then
           echo "Creating new release $tag"
+          echo "Is prerelease=$prerelease"
           gh release create "$tag" ./${{ env.PROJECT }}/src/bin/Release/*.nupkg --draft --prerelease --title "$title"
         else
           echo "Updating existing release $tag"
