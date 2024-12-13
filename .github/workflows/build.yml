@@ -24,10 +24,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 8.0.x
     - name: Get version
       if: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch'}}
       id: get-version
@@ -47,7 +43,11 @@ jobs:
             echo "Error! There is already a published release with version ${{ env.tag }}"
             exit 1
         fi
-      shell: bash    
+      shell: bash
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
     - name: Build
       run: |
          chmod +x ./${{ env.PROJECT }}/build.sh
