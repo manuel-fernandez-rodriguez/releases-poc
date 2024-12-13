@@ -15,6 +15,7 @@ jobs:
     - name: Get package
       env:  
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_REPO: ${{ github.event.repository.name }}
         tag: ${{ github.ref }}
       run: |
         gh release download "${{ env.tag }}"
