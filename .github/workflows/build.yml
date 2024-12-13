@@ -46,7 +46,7 @@ jobs:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         tag: ${{ env.PROJECT }}-${{ steps.get-version.outputs.version }}
         title: ${{ env.PROJECT }} v${{ steps.get-version.outputs.version }}
-        prerelease: ${{ steps.get-version.outputs.version-suffix != "" }}
+        prerelease: ${{ steps.get-version.outputs.version-suffix != '' }}
       run: |
         RELEASE_NAME="$(gh release list --json name,tagName,isDraft --jq '.[] | select(.tagName=="${{ env.tag }}" and .isDraft)|.name')"
         if [ -z "${RELEASE_NAME}" ]
